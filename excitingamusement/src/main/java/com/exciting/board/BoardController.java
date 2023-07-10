@@ -71,6 +71,7 @@ public class BoardController {
 	 * 
 	 * 이미지 Image 삭제 Delete Start
 	 * 
+	 * 
 	 */
 
 	@DeleteMapping("/deleteBoardImg")
