@@ -55,19 +55,26 @@ function AnnouncementDetail() {
     const deleteBoard = () => {
 
         if (window.confirm("정말로 삭제하시겠습니까?")) {
-            axios
-                .delete("http://localhost:8080/customer/deleteAnnouncement", {
+            axios.delete("http://localhost:8080/customer/deleteBoardImg", {
+                params: { announcement_num: viewData.announcement_num }
+            }).then(() => {
+                window.alert("삭제완료")
+                window.location.href = "/inquiry";
+            }).then(() => {
+                axios.delete("http://localhost:8080/customer/deleteAnnouncement", {
                     params: {
                         announcement_num: viewData.announcement_num,
                     },
                 })
-                .then(() => {
-                    window.location.href = "/announcement";
-                    setDeleteCheck(1);
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
+                    .then(() => {
+                        window.location.href = "/announcement";
+                        setDeleteCheck(1);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            })
+
         }
     };
 

@@ -83,12 +83,19 @@ function InquiryDetail() {
   const deleteInquiry = () => {
     if (window.confirm("정말로 삭제하시겠습니까?")) {
       const inquiry_num = addressParams.get("inquiry_num");
-      axios.delete('http://localhost:8080/customer/deleteInquiry', {
-        params: {
-          inquiry_num: inquiry_num
-        }
+      axios.delete("http://localhost:8080/customer/deleteBoardImg", {
+        params: { inquiry_num: inquiry_num }
+      }).then(() => {
+        window.alert("삭제완료")
+        window.location.href = "/inquiry";
+      }).then(() => {
+        axios.delete('http://localhost:8080/customer/deleteInquiry', {
+          params: {
+            inquiry_num: inquiry_num
+          }
+        })
       }).then((response) => {
-
+        window.alert("삭제완료")
         window.location.href = "/inquiry";
         // if (response.data === 1) {
 

@@ -44,10 +44,12 @@ import org.springframework.web.multipart.MultipartFile;
 import com.exciting.customerService.service.CustomerService;
 import com.exciting.dto.AnnouncementDTO;
 import com.exciting.dto.BoardImgDTO;
+import com.exciting.dto.FaqDTO;
 import com.exciting.dto.InquiryDTO;
 import com.exciting.dto.ResponseDTO;
 import com.exciting.entity.AnnouncementEntity;
 import com.exciting.entity.BoardImgEntity;
+import com.exciting.entity.FaqEntity;
 import com.exciting.entity.InquiryEntity;
 import com.exciting.utils.ChangeJson;
 import com.exciting.utils.FileUtils;
@@ -94,7 +96,7 @@ public class CustomerServiceController {
 		int pageNum = Integer.parseInt(String.valueOf(map.get("pageNum")));
 		String Search = String.valueOf(map.get("search"));
 
-		Page<AnnouncementDTO> announcementList = service.getAnnouncementList(entity, pageNum,Search);
+		Page<AnnouncementDTO> announcementList = service.getAnnouncementList(entity, pageNum, Search);
 
 		
 
@@ -192,15 +194,18 @@ public class CustomerServiceController {
 
 		// 기존 이미지 데이터를 조회 및 DB에 저장된 이미지 정보 삭제
 		List<BoardImgEntity> OriginData = service.customerImgDelete(boardImgEntity);
-		
+		System.out.println("喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝"+OriginData);
+
 		// dto변환
 		List<BoardImgDTO> OriginDataDTO = OriginData.stream().map(BoardImgDTO::new).collect(Collectors.toList());
-
+		System.out.println("喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝喝"+OriginDataDTO);
 		for (BoardImgDTO rs : OriginDataDTO) {
 
 			// String uploadDir = BOARD_UPLOAD_PATH;
 			String uploadDir = new File(BOARD_UPLOAD_PATH).getAbsolutePath();
+			System.out.println(uploadDir);
 			File file = new File(uploadDir, rs.getBoardimg());
+			System.out.println(file);
 			// String safeFile = uploadDir+"/"+originalFileName;
 			if (file.exists()) { // 파일이 존재하면
 				file.delete(); // 파일 삭제
@@ -385,46 +390,19 @@ public class CustomerServiceController {
 //	
 //	
 
-//	
-//	@RequestMapping(value = "/customer/faq", method = RequestMethod.GET)
-//	public ModelAndView faqget(@RequestParam Map<String,Object> map,HttpServletRequest request) {
-//		ModelAndView mav = new ModelAndView();
-//		//페이징
-//		//검색은 필요없을거같음
-//		String f_type= null;
-//		CustomerServiceController cus = new CustomerServiceController();
-//		if(String.valueOf(map.get("f_type")).equals("null")) {
-//			//System.out.println("여기 통과는 했니?");
-//			map.put("f_type", "0");
-//			f_type=String.valueOf(map.get("f_type"));
-//		}else {
-//			//System.out.println("여기로 왔니?");
-//			f_type=String.valueOf(map.get("f_type"));
-//		}
-//		List<Map<String,Object>> faqCnt = service.getFaqList(map);
-//
-//		cus.totalCount = Integer.parseInt(String.valueOf(faqCnt.get(0).get("cnt")));
-//		cus.pageSize =5;
-//		cus.blockPage = 10;
-//		cus.totalPage = (int)Math.ceil((double)cus.totalCount / cus.pageSize); // 전체 페이지 수
-//		cus.pageNum = 1; // 바꿔가면서 테스트 1~10 =>1, 11~20 => 11
-//		cus.pageTemp = String.valueOf(map.get("pageNum"));
-//		if (cus.pageTemp != "null" && !cus.pageTemp.equals(""))
-//			cus.pageNum = Integer.parseInt(cus.pageTemp);
-//		cus.start = (cus.pageNum - 1) * cus.pageSize+1;  // 첫 게시물 번호
-//		cus.end = 5; // 마지막 게시물 번호
-//		String paging = BoardPage.customerfaq(cus.totalCount, cus.pageSize, cus.blockPage, cus.pageNum, request.getRequestURI(),f_type);
-//		int start2 = cus.start-1;
-//		
-//		
-//
-//		//mav.addObject("list",faqList);
-//		mav.setViewName("/customerService/faq");
-//		mav.addObject("paging",paging);
-//		mav.addObject("start",start2);
-//		return mav;
-//	}
-//	
+	
+	@GetMapping("/getfaqList")
+	@ResponseBody
+	public Page<FaqDTO> getfaqList(FaqDTO dto,int pageNum) {
+		
+		FaqEntity faqEntity = FaqDTO.toEntity(dto);
+		System.out.println(dto+"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+		String f_type= null;
+		Page<FaqDTO> faqList = service.getFaqList(faqEntity,pageNum);
+		
+		return faqList;
+	}
+	
 //	
 //	//이거 나중에 업데이트로 이용하셈 
 //	@RequestMapping(value = "/customer/getfaqList", method = RequestMethod.GET)
@@ -547,11 +525,8 @@ public class CustomerServiceController {
 			
 			List<InquiryEntity> inquiryDetailDataOP = inquiryDetail.stream().map((detail) -> detail.get()).collect(Collectors.toList());
 			List<InquiryDTO> inquiryDetailData = inquiryDetailDataOP.stream().map(InquiryDTO::new).collect(Collectors.toList());
-			System.out.println(inquiryDetailDataOP);
-			System.out.println(inquiryDetailData);
 			
 			ResponseDTO<InquiryDTO> response = ResponseDTO.<InquiryDTO>builder().data(inquiryDetailData).build();
-			System.out.println("여기서 나는 에러인가");
 			return ResponseEntity.ok().body(response);
 		} catch (Exception e) {
 			String error = e.getMessage();
@@ -598,7 +573,6 @@ public class CustomerServiceController {
 		InquiryEntity entity = InquiryDTO.toEntity(dto);
 		service.deleteInquiry(entity);
 		
-		deleteBoardImg(null, inquiry_num, null);
 	}
 	
 

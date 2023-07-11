@@ -122,9 +122,11 @@ function InsertInquiry() {
             <table>
               <tbody>
                 <tr style={{ height: '100px' }}>
-                  <td style={{ width: '20%' }}>개인정보 수집,<br />이용동의서</td>
+                  <td style={{ width: '20%', fontStyle: 'bold', fontSize: 20 }}>개인정보 수집,이용동의서</td>
+                </tr>
+                <tr>
                   <td>
-                    <textarea rows="10" name="b_content" readOnly style={{ width: '100%', resize: 'none' }}>
+                    <textarea rows="10" cols="50" name="b_content" readOnly style={{ width: '100%', resize: 'none', margin: 'auto' }}>
                       개인 정보 수집, 이용 동의서
 
                       본인은 방문 전 이용문의 작성과 관련하여 귀사가 아래와 같이 본인의 개인정보를 수집, 이용하는데 동의합니다.

@@ -14,21 +14,7 @@ import Inquiry from './pages/customerService/Inquiry/InquriyList/inquiry';
 import InquiryDetail from './pages/customerService/Inquiry/InquiryDetail/inquiryDetail';
 import CustomerMove from './pages/customerService/customerMove';
 import Layout from './pages/customerService/components/layout';
-
-
-
-
-
-
-
-const MainLayout = () => {
-  return (
-    <>
-      <CustomerMove />
-    </>
-  );
-};
-
+import FAQ from './pages/customerService/faq/FAQ';
 
 
 
@@ -50,7 +36,9 @@ function App() {
         <Route exact path="insertInquiry" element={<InsertInquiry />}></Route >
         <Route exact path="inquiry" element={<Inquiry />}></Route >
         <Route exact path="inquiryDetail" element={<InquiryDetail />}></Route >
+        <Route exact path="faq" element={<FAQ></FAQ>}></Route>
       </Route>
+
 
     </Routes >
 

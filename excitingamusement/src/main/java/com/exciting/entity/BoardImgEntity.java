@@ -21,16 +21,19 @@ public class BoardImgEntity {
 	@Column(name = "boardimg_num")
 	private Integer boardimg_num;
 
-	@Column(nullable = true)
+	@Column(nullable = true,name="board_id")
 	private Integer board_id;
 
 	@Column(length = 1000, name = "boardimg")
-	@JoinColumn(name="board_id")
 	private String boardimg;
 	
-	@Column(nullable = true)
+	@Column(nullable = true ,name="announcement_num")
 	private Integer announcement_num;
 	
-	@Column(nullable = true)
+	@Column(nullable = true, name="inquiry_num")
 	private Integer inquiry_num;
+	
+//	@ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "inquiry_num")
+//    private InquiryEntity inquiry;
 }

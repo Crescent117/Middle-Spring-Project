@@ -7,10 +7,12 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 
 import com.exciting.dto.AnnouncementDTO;
+import com.exciting.dto.FaqDTO;
 import com.exciting.dto.InquiryDTO;
 import com.exciting.entity.AnnouncementEntity;
 import com.exciting.entity.BoardEntity;
 import com.exciting.entity.BoardImgEntity;
+import com.exciting.entity.FaqEntity;
 import com.exciting.entity.InquiryEntity;
 
 	
@@ -30,5 +32,5 @@ public interface CustomerService{
 	List<BoardImgEntity> selectInquiryImg(final InquiryDTO dto);
 	void InquieyAnswer(final InquiryEntity entity);
 	void deleteInquiry(final InquiryEntity entity);
-
+	Page<FaqDTO> getFaqList(final FaqEntity entity,int pageNum);
 }

@@ -22,14 +22,18 @@ import org.springframework.stereotype.Service;
 import com.exciting.board.repository.BoardImgRepository;
 import com.exciting.board.repository.JpaSpecification;
 import com.exciting.customerService.repository.AnnouncementRepository;
+import com.exciting.customerService.repository.FaqRepository;
 import com.exciting.customerService.repository.InquiryRepository;
 import com.exciting.dto.AnnouncementDTO;
+import com.exciting.dto.FaqDTO;
 import com.exciting.dto.InquiryDTO;
 import com.exciting.entity.AnnouncementEntity;
 import com.exciting.entity.BoardEntity;
 import com.exciting.entity.BoardImgEntity;
+import com.exciting.entity.FaqEntity;
 import com.exciting.entity.InquiryEntity;
 import com.exciting.utils.ChangeJson;
+import com.exciting.utils.ChangeTEXT;
 
 import lombok.Builder;
 
@@ -39,14 +43,14 @@ public class CustomerServiceImpl implements CustomerService {
 	 private AnnouncementRepository announcementRepository;
 	 private BoardImgRepository boardImgRepository;
 	 private InquiryRepository inquiryRepository;
+	 private FaqRepository faqRepository;
 
-	  @Autowired
 	  public CustomerServiceImpl(AnnouncementRepository announcementRepository, BoardImgRepository boardImgRepository
-			  , InquiryRepository inquiryRepository) {
+			  , InquiryRepository inquiryRepository, FaqRepository faqRepository) {
 	    this.announcementRepository = announcementRepository;
 	    this.boardImgRepository = boardImgRepository;
 	    this.inquiryRepository = inquiryRepository;
-	  }
+	    this.faqRepository=faqRepository;	  }
 
 	/*
 	 * 
@@ -233,26 +237,30 @@ public class CustomerServiceImpl implements CustomerService {
 			}else if ( boardImgEntity.getInquiry_num() != null) {
 				//inquiry 삭제로 인한 이미지 삭제
 				//게시글 전체 이미지 불러오기
-				System.out.println("너 들어오니!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"+boardImgEntity.getInquiry_num());
-				List<BoardImgEntity> deleteImgDataList = boardImgRepository.findByInquiry_num(boardImgEntity.getInquiry_num());
+				Integer inquiry_num =  boardImgEntity.getInquiry_num();
+				InquiryDTO dto = new InquiryDTO();
+				dto.setInquiry_num(inquiry_num);
+
+				List<BoardImgEntity> deleteImgDataList = boardImgRepository.boardInquiryNum(dto.getInquiry_num());
 				System.out.println(deleteImgDataList);
 				deleteImgData = deleteImgDataList;
+				System.out.println(deleteImgData);
 			}
 
 			// 이미지 DB에서 삭제
 			if (deleteImgData != null) {
+				System.out.println("설마 여기 들어오니????");
 				boardImgRepository.delete(boardImgEntity);
 			} else {
 				throw new RuntimeException("BoardImgDelete Service NotFound");
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException("BoardImgDelete Service Error");
 		}
-		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"+deleteImgData);
 		// 저장해뒀던 기존 데이타 반환
 		return deleteImgData;
+
 
 	}
 	
@@ -449,11 +457,14 @@ public class CustomerServiceImpl implements CustomerService {
 	 * 
 	 * */
 	
+	
+	//여기임
+	
 	public List<BoardImgEntity> selectInquiryImg(final InquiryDTO dto){
 		
 		try {
 			
-			List<BoardImgEntity> InquiryImg = boardImgRepository.findByInquiry_num(dto.getInquiry_num());
+			List<BoardImgEntity> InquiryImg = boardImgRepository.findInquiryNum(dto.getInquiry_num());
 			
 			return InquiryImg;
 			
@@ -486,15 +497,14 @@ public class CustomerServiceImpl implements CustomerService {
 			entity.setInquiry_num(0);
 			InquiryEntity insertData = inquiryRepository.save(entity);
 			int inquiry_num = insertData.getInquiry_num();
+			
 			Optional<InquiryEntity> updateData = inquiryRepository.findById(inquiry_num);
-			System.out.println(updateData.get());
-			System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"+originRef);
+			
 			if(updateData.isPresent()) {
 				int updateInquiry_num = updateData.get().getInquiry_num();
 				updateData.get().setRef(originRef);
 				updateData.get().setB_type("답변");
 				updateData.get().setPostDate(LocalDateTime.now());
-				System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"+updateData);
 				inquiryRepository.save(updateData.get());
 				
 			}else {
@@ -521,10 +531,11 @@ public class CustomerServiceImpl implements CustomerService {
 	 * 
 	 * */
 	
-	@Transactional
 	public void deleteInquiry(final InquiryEntity entity) {
 		try {
+			
 			inquiryRepository.delete(entity);
+			
 			
 		} catch (Exception e) {
 			
@@ -539,6 +550,44 @@ public class CustomerServiceImpl implements CustomerService {
 	 * 
 	 * */
 	
+	
+	/*
+	 * 
+	 * getFaqList Start
+	 * 
+	 * 
+	 * */
+	public Page<FaqDTO> getFaqList(final FaqEntity entity,int pageNum){
+		
+		Sort sort = Sort.unsorted();
+		
+		PageRequest pageRequest = getPageRequestLogic(sort,pageNum);
+		
+		String type = entity.getF_type();
+		Specification<FaqEntity> spec = (Specification<FaqEntity>) JpaSpecification.equalString("f_type", type);
+		Page<FaqEntity> faqFirstList = faqRepository.findAll(spec,pageRequest);
+		List<FaqDTO> faqSecondList = faqFirstList.stream().map(FaqDTO::new).collect(Collectors.toList());
+		
+		for(FaqDTO f :faqSecondList ) {
+			f.setContent(ChangeTEXT.ToTextarea(f.getContent()));
+			f.setTitle(ChangeTEXT.ToTextarea(f.getTitle()));
+		}
+		
+		Page<FaqDTO> faqpageList = new PageImpl<>( faqSecondList , pageRequest, faqFirstList.getTotalElements());
+		
+		
+		return faqpageList;
+	}
+	
+	/*
+	 * 
+	 * getFaqList End
+	 * 
+	 * 
+	 * */
+	
+	
+	
 	/////////////////////////////////////////////////////////////////////////////////
 	
 /*
@@ -547,12 +596,15 @@ public class CustomerServiceImpl implements CustomerService {
  * 
  * */
 	
+	
+
 	//pageRequest 처리
 	public PageRequest getPageRequestLogic(Sort sort,int pageNum) {
 		
 		try {
 			pageNum = pageNum-1;
 			PageRequest pageRequest =PageRequest.of(pageNum, 10, sort);
+			
 			return pageRequest;
 		} catch (Exception e) {
 			throw new RuntimeException("getPageRequestLogic Error");

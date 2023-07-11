@@ -12,27 +12,49 @@ import com.exciting.entity.BoardFavoriteEntity;
 import com.exciting.entity.BoardImgEntity;
 
 public class JpaSpecification {
-	public static Specification<?> equalImgData(int board_id) {
-        return new Specification<BoardImgEntity>() {
-			@Override
-            public Predicate toPredicate(Root<BoardImgEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                // 1) equal
-					
-                return criteriaBuilder.equal(root.get("board_id"), board_id);
-            }
-        };
-    }
+//	public static Specification<?> equalImgData(int key,int value) {
+//        return new Specification<BoardImgEntity>() {
+//			@Override
+//            public Predicate toPredicate(Root<BoardImgEntity> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+//                // 1) equal
+//					
+//                return criteriaBuilder.equal(root.get(key), value);
+//            }
+//        };
+//    }
 	
 	
 	public static Specification<?> LikeSearch(String searchValue,String type) {
         return (root, query, criteriaBuilder) -> {
-            if (searchValue == null || searchValue.isEmpty()) {
-                return criteriaBuilder.notEqual(root.get("b_type"), "답변");
+            if (searchValue == null || searchValue.isEmpty() ) {
+                return criteriaBuilder.notEqual(root.get(type), "답변");
             } else {
                 return criteriaBuilder.like(root.get(type), "%" + searchValue + "%");
             }
         };
     }
+	
+	
+	
+	public static Specification<BoardImgEntity> equalInteger(String key, Integer value) {
+	    return (root, query, criteriaBuilder) -> {
+	        if (key != null || value != null) {
+	            return criteriaBuilder.equal(root.get(key), value);
+	        } else {
+	            return criteriaBuilder.equal(root.get(key), value);
+	        }
+	    };
+	}
+	
+	public static Specification<?> equalString(String key, String value) {
+	    return (root, query, criteriaBuilder) -> {
+	        if (key != null && value != null && value=="전체") {
+	            return criteriaBuilder.equal(root.get(key), value);
+	        } else {
+	            return criteriaBuilder.isNotNull(root.get(key));
+	        }
+	    };
+	}
 	
 //	
 }

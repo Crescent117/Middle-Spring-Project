@@ -1,6 +1,7 @@
 package com.exciting.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.persistence.*;
 
@@ -20,7 +21,7 @@ public class InquiryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "inquiry_num")
-    private int inquiry_num;
+    private Integer inquiry_num;
 
     @Column(name = "b_type")
     private String b_type;
@@ -45,4 +46,8 @@ public class InquiryEntity {
 
     @Column(name = "seq")
     private int seq;
+    
+    //@OneToMany(mappedBy = "inquiry", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @OneToMany(mappedBy = "inquiry", fetch = FetchType.LAZY)
+//    private List<BoardImgEntity> boardImgList;
 }

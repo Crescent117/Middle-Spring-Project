@@ -1,4 +1,4 @@
-import PagingNumberLogic from "../../../components/PagingNumberLogic";
+import PagingNumberLogic from "./PagingNumberLogic";
 
 function PagingSearch({ searchValue, selectSearchType, setSearchValue, totalPages, pageNumber, setSelectSearchType }) {
 

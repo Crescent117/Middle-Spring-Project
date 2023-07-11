@@ -13,7 +13,6 @@ function PagingNumberLogic({ searchValue, pageNumber, totalPages }) {
     // pageNumber 담을 공간
     let pageNumbers = [];
     let arrNum = 0;
-    console.log("11111111111111111111111111111111111111111111111111111")
     for (let i = startPage; i <= endPage; i++) {
         pageNumbers[arrNum] = i;
         arrNum++;

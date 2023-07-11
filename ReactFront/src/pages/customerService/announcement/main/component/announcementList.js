@@ -75,8 +75,8 @@ function AnnouncementList() {
         totalPages.current = data.totalPages;
         setData(data.content);
       }).catch(error => {
-        window.alert("정보 불러오기 실패!");
-        window.location.href = "/";
+        // window.alert("정보 불러오기 실패!");
+        // window.location.href = "/";
       });
 
     };

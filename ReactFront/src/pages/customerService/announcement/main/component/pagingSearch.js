@@ -1,6 +1,6 @@
 import React from "react";
 import AnnouncementSearch from "./AnnouncementSearch";
-import PagingNumberLogic from "../../../components/PagingNumberLogic";
+import PagingNumberLogic from "./PagingNumberLogic";
 
 function PagingSearch({ setSearchCheck, searchData, setSearchData, pageNumber, totalPages }) {
     // 글쓰기 이동
