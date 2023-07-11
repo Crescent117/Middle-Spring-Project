@@ -50,10 +50,4 @@ https://github.com/Crescent117/Middle-Spring-Project/tree/5bf249be0720b1886dbd93
 ### node :v14.21.3
 ### npm v6.14.18
 ### react@18.2.0
-<<<<<<< HEAD
-<<<<<<< HEAD
 ### ElasticSearch
-=======
->>>>>>> 4f3ca0a185a389e423435895f3ccf0b4d7e6ce39
-=======
->>>>>>> 4f3ca0a185a389e423435895f3ccf0b4d7e6ce39
