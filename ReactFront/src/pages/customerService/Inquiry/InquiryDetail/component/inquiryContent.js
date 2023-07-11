@@ -26,3 +26,4 @@ function InquiryContent({ viewData }) {
 }
 
 export default InquiryContent;
+

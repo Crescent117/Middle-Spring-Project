@@ -26,9 +26,8 @@ function AddAnnouncement() {
         titleInputRef.current = TitleValue;
     };
 
-
-
     const fetchData = () => {
+
         console.log(titleInputRef.current);
         console.log(ckeditorData.current);
         console.log(uploadedImages.current);
@@ -40,12 +39,15 @@ function AddAnnouncement() {
 
             try {
                 // 텍스트 데이터 전송
+
                 const response = axios.post("http://localhost:8080/customer/insertAnnouncement", {
+
                     c_title: titleInputRef.current,
                     c_content: ckeditorData.current,
                 });
 
                 const announcement_num = response.data;
+
 
                 if (selectedFiles.length > 0) {
                     // 이미지 데이터 전송
@@ -57,8 +59,8 @@ function AddAnnouncement() {
                     });
 
                     // boardId와 함께 이미지 업로드 API에 전송
-                    axios.post(
-                        `http://localhost:8080/customer/imageUpload?announcement_num=${announcement_num}`,
+
+                    axios.post(`http://localhost:8080/customer/imageUpload?announcement_num=${announcement_num}`,
                         formData,
                         {
                             headers: {
@@ -67,6 +69,7 @@ function AddAnnouncement() {
                         }
                     ).then(() => {
                         window.location.href = "/announcement";
+
                     }).catch(error => {
                         console.log(error)
                     });

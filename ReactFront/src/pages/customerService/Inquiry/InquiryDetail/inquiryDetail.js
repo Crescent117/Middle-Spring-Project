@@ -11,6 +11,7 @@ function InquiryDetail() {
   const [viewData, setViewData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [inquiry_num, setInquiry_num] = useState(0)
+
   const location = useLocation();
   const addressParams = new URLSearchParams(location.search);
 
@@ -26,13 +27,13 @@ function InquiryDetail() {
         inquiry_num: inquiry_num,
       },
     })
+
       .then((response) => {
         console.log(response.data);
         setViewData(response.data.data)
         setIsLoading(false); // 데이터 로드 완료
       });
   };
-
 
   //목록으로 돌아가기
   const backToThe = () => {
@@ -60,8 +61,8 @@ function InquiryDetail() {
     }
   }
 
-  return (
 
+  return (
     <>
       <section className="notice">
         <div className="wrap" >
@@ -70,7 +71,6 @@ function InquiryDetail() {
               <div>데이터를 불러오는 중...</div>
             ) : (
               <>
-
                 {/* 상단 */}
                 <div className="header">
                   <InquiryDetailTop
@@ -97,6 +97,7 @@ function InquiryDetail() {
                     <InquiryAnswer
                       inquiry_num={inquiry_num}
                       viewData={viewData} />
+
                   )}
 
                   {/* 글 삭제 (관리자) */}
