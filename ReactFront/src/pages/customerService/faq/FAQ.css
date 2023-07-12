@@ -113,7 +113,7 @@ h1 {
 	background-color: #9fa4a8;
 }
 
-.tab_wrap {
+.faqTab_wrap {
 	clear: both;
 	margin: 100px auto;
 	width: auto;
@@ -126,12 +126,12 @@ h1 {
 
 }
 
-ul.tabs {
+ul.faqTabs {
 	float: left;
 	list-style: none;
 }
 
-ul.tabs li {
+ul.faqTabs li {
 	display: inline-block;
 	cursor: pointer;
 	width: 200px;
@@ -143,7 +143,7 @@ ul.tabs li {
 
 
 
-/* ul.tabs li a{
+/* ul.faqTabs li a{
 	color:#666666;
 	text-decoration: none;
 	font-size:22px;

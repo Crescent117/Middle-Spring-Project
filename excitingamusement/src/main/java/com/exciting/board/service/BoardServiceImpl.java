@@ -56,6 +56,8 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public BoardDTO boardView(int board_id) {
 		Optional<BoardEntity> boardView = boardRepository.findById(board_id);
+		System.out.println(board_id);
+		System.out.println(boardView+"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 		if (boardView.isPresent()) {
 			return new BoardDTO(boardView.get());
 		}
@@ -515,11 +517,7 @@ public class BoardServiceImpl implements BoardService {
 	
 		
 		int board_id = 0;
-		System.out.println("////////////////////////////////////");
-		System.out.println(boardEntity);
-		System.out.println("////////////////////////////////////");
 		try {
-			boardEntity.setMember_id("hong1");
 			boardEntity.setPostdate(LocalDateTime.now());
 			
 			BoardEntity insertData = boardRepository.save(boardEntity);

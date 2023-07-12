@@ -8,9 +8,7 @@ function AddReComment(props) {
     const [comment, setComment] = useState('');
 
     const insertReComment = async () => {
-        console.log(commentList)
         const reply = textAreaRef.current.value;
-        console.log(reply);
 
         if (reply.length < 3) {
             window.alert("네글자이상 입력해주세요!!")
@@ -25,7 +23,6 @@ function AddReComment(props) {
                 getCommentList()
                 toggleReply(index)
             }).catch(error => {
-                console.log(error);
             })
         }
 

@@ -30,9 +30,9 @@ const Tabs = ({ changeF_type, f_type, faqs }) => {
       <div style={{ margin: "30px 0" }}>
         <h1>자주 묻는 질문</h1>
       </div>
-      <div className="tab_wrap">
-        <div className="tab">
-          <ul className="tabs">
+      <div className="fatTab_wrap">
+        <div className="faqTab">
+          <ul className="faqTabs">
 
             {faqs && tabsData.map((e, index) => (
               <li

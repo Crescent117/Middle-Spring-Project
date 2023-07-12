@@ -8,7 +8,7 @@ export function call(api, method, request) {
         }),
         url: API_BASE_URL + api,
         method: method,
-        
+
 
     };
     if (request) {

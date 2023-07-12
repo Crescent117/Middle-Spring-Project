@@ -149,6 +149,7 @@ function CommentList(props) {
 
     //삭제 수정 버튼
     const renderButtons = (comment) => {
+
         return (
             <>
                 <td
@@ -157,6 +158,8 @@ function CommentList(props) {
                         toggleUpdate(comment.reply_num)
                     }
                 >
+
+
                     <button className="btn btn-white" id="comment_update">
                         수정
                     </button>
@@ -229,7 +232,7 @@ function CommentList(props) {
                                         {renderReplyContent(comment, comment.seq === 0 ? 0 : comment.seq)}
                                         {renderPostDate(comment)}
                                         {renderReplyBtn(index)}
-                                        {renderButtons(comment, comment.reply_num)}
+                                        {(viewData.member_id === sessionStorage.getItem("member_id")) ? renderButtons(comment, comment.reply_num) : ""}
                                     </>
                                 )}
                             </tr>

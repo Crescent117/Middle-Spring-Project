@@ -10,26 +10,18 @@ function AddBoard() {
     const typeSelect = useRef("0");
     const titleInputRef = useRef("");
     const ckeditorData = useRef("");
-    const uploadedImages = useRef([]);
     const [content, setContent] = useState(undefined);
     const [selectedFiles, setSelectedFiles] = useState([]);
 
 
-    const handleValueChange = (slValue) => {
-        typeSelect.current = slValue;
-        console.log(slValue);
-    };
 
-    const handleTitleValueChange = (TitleValue) => {
-        titleInputRef.current = TitleValue;
-    };
+
 
 
 
     const fetchData = async () => {
-        console.log(titleInputRef.current);
-        console.log(ckeditorData.current);
-        console.log(uploadedImages.current);
+        const member_id = sessionStorage.getItem("member_id");
+        console.log(member_id)
 
         if (typeSelect.current === "0")
             window.alert("게시판 태그를 선택해주세요!");
@@ -41,39 +33,33 @@ function AddBoard() {
 
             try {
                 // 텍스트 데이터 전송
-                const response = await axios.post("http://localhost:8080/board/createBoard", {
+                const response = await axios.post("http://localhost:8080/board/addBoard", {
                     b_title: titleInputRef.current,
                     b_type: typeSelect.current,
                     b_content: ckeditorData.current,
+                    member_id: member_id
                 });
 
                 const data = response.data;
-                console.log(response.data);
-                const boardId = data;  // 서버에서 생성된 게시물 ID를 기반으로 함. 적절한 Key로 대체해야 함.
+                const boardId = data;
 
-                if (selectedFiles.length > 0) {
-                    // 이미지 데이터 전송
-                    const formData = new FormData();
+                if (selectedFiles.length > 0) { window.location.href = "/board"; }
+                // 이미지 데이터 전송
+                const formData = new FormData();
 
-                    // 이미지 파일 추가
-                    selectedFiles.forEach((file) => {
-                        formData.append("file", file);
-                    });
+                // 이미지 파일 추가
+                selectedFiles.forEach((file) => {
+                    formData.append("file", file);
+                });
 
-                    // boardId와 함께 이미지 업로드 API에 전송
-                    const imageResponse = await axios.post(`http://localhost:8080/board/imageUpload/${boardId}`, formData, {
-                        headers: {
-                            "Content-Type": "multipart/form-data",
-                        },
-                    });
-
-                    console.log(imageResponse);
-                }
-
-                window.location.href = "/board";
+                // boardId와 함께 이미지 업로드 API에 전송
+                await axios.post(`http://localhost:8080/board/imageUpload/${boardId}`, formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                });
             } catch (error) {
-                console.log("HTTP error");
-                console.log(error);
+
             }
         }
     };
@@ -86,18 +72,15 @@ function AddBoard() {
     }
 
     return (
-        <div className='create-board'>
+        <div className='board-create-board'>
             <Container>
                 <SelectType
                     typeSelect={typeSelect}
-                    onValueChange={handleValueChange}
                     inputRef={titleInputRef}
-                    setTitleValue={handleTitleValueChange}
                 />
                 <hr />
                 <Ckeditor
                     ckeditorData={ckeditorData}
-                    //onImageUpload={handleImageUpload}
                     content={content}
                     setContent={setContent}
                 />

@@ -1,14 +1,8 @@
-import React, { useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import React from 'react';
 
 function SelectType(props) {
     const { typeSelect, inputRef } = props;
-    //const { titleValue, setTitleValue } = props;
-
-
-    // useEffect(() => {
-    //     console.log(titleValue.)
-    // }, [titleValue]);
 
     const selectType = [
         { name: "선택", id: "option", value: "0" },
@@ -21,17 +15,15 @@ function SelectType(props) {
 
     const changeSelectValue = (event) => {
         typeSelect.current = event.target.value;
-        console.log(typeSelect);
     };
 
     const changeTitleValue = (titleEvent) => {
         inputRef.current = titleEvent.target.value;
-        console.log(inputRef.current);
     };
 
     return (
-        <div>
-            <div className='create-window'>
+        <div >
+            <div className='board-create-window'>
                 <div className='top-wrap'>
                     <select
                         className='form-select'

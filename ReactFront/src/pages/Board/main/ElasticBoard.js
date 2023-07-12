@@ -4,18 +4,17 @@ import './board.css'
 import $ from 'jquery'
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container } from 'react-bootstrap';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 function ElasticBoard() {
 
-    const [currentPage, setCurrentPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState();
     const [usepageSize, setUsepageSize] = useState(10);
     const [tabsCss, setTabsCss] = useState("11")
     const [pagevalue, setPagevalue] = useState(100);
     const [elasticResults, setElasticResults] = useState([]);
     const [searchValue, setSearchValue] = useState("");
-    const [selectTabs, setSelectTabs] = useState("전체");
+    const [selectTabs, setSelectTabs] = useState();
     const [pageCount, setPageCount] = useState(10);
     const [pagingSize, setPagingSize] = useState(10);
 
@@ -30,9 +29,9 @@ function ElasticBoard() {
 
     useEffect(() => {
 
-        elastick(currentPage);
+        elastick();
 
-    }, [location]);
+    }, []);
 
 
 
@@ -40,37 +39,34 @@ function ElasticBoard() {
     // $(document).on('click', '.pagination-button', function() {
     //     setCurrentPage(parseInt($(this).val()));
     //     elastick(currentPage);
-    //     console.log('클릭');
     //   });
 
 
-    const elastick = (currentPage) => {
-        let searchValue = document.getElementById("text").value;
+    const elastick = async () => {
+        let search = document.getElementById("text").value;
         let selectField = document.querySelector("select[name=selectField]").value;
         let pageSize = addressParams.get("viewCnt");
         let b_type = addressParams.get("b_type");
-
-        setUsepageSize(pageSize);
+        let pageNum = addressParams.get("pageNum")
 
         //setCurrentPage(currentPage)
 
 
-        console.log("selectField: " + selectField);
-        console.log("searchValue: " + searchValue);
-        console.log("currentPage: " + currentPage);
-        console.log("pageSize: " + pageSize);
-        console.log("b_type: " + b_type);
-
 
         //pageSize가 null일땐 10
-        if (pageSize === null) {
-            pageSize = 10;
-        }
-
-
+        if (pageSize === null) { pageSize = 10; }
+        if (b_type === null) { b_type = ""; setSelectTabs(""); }
+        if (pageNum === null) { pageNum = 1 }
+        if (search === null) { search = "" }
+        setSearchValue(search);
+        setCurrentPage(pageNum);
+        setSelectTabs(b_type);
+        setUsepageSize(pageSize);
+        console.log(sessionStorage.getItem('member_id'));
+        console.log("=-======================================================================")
         //기본적으로 틀만 만들어놓고 값이 있는것만 push
         const query = {
-            from: (currentPage - 1) * pageSize,
+            from: (pageNum - 1) * pageSize,
             size: pageSize,
             sort: [
                 {
@@ -86,11 +82,11 @@ function ElasticBoard() {
             },
         };
 
-        if (searchValue) {
+        if (search) {
             query.query.bool.must.push({
                 wildcard: {
                     [selectField]: {
-                        value: `*${searchValue}*`,
+                        value: `*${search}*`,
                     },
                 },
             });
@@ -109,28 +105,16 @@ function ElasticBoard() {
             delete query.query.bool;
         }
 
-        getElasticBoardList(query, pageSize);
+        getElasticBoardList(query, pageSize, pageNum);
     };
-    // const query1 = {
-    //     "query": {
-    //         "wildcard": {
-    //             [selectField]: {
-    //                 "value": `*${'${searchValue}'}*`
-    //             }
-    //         }
-    //     }
-    // };
 
 
-
-    const getElasticBoardList = (query, pageSize) => {
-
+    const getElasticBoardList = async (query, pageSize, pageNum) => {
         const sel = [query];
 
         const url = 'http://localhost:9200/board_index/_search';
 
 
-        console.log('111111111111111' + pageSize)
         const headers = { 'Content-Type': 'application/json' };
         const data = JSON.stringify(sel[0]);
         const requestOption = {
@@ -141,50 +125,39 @@ function ElasticBoard() {
         };
 
 
-        axios(requestOption).then(response => {
+        await axios(requestOption).then(response => {
             let pagevalue = response.data.hits.total.value;
-            let countpages = Math.ceil(pagevalue / pageSize);
 
             setPagevalue(pagevalue);
 
             const data = response.data.hits.hits;
-
             setElasticResults(data);
-            paging(pagevalue, currentPage, pageSize)
+            paging(pagevalue, pageNum)
         }).catch(error => {
-            console.log(error);
         });
     }
 
-    function paging(pagevalue, currentPage, pageSize) {
+    function paging(pagevalue, pageNum) {
         const buttons = [];
         $('.page_test').html("");
         let lowpage = 1;
         let maxpage = 10;
 
-        lowpage = Math.ceil(pagevalue / pageSize);
+        lowpage = Math.ceil(pagevalue / usepageSize);
 
-        const pagegroup = Math.ceil(currentPage / maxpage);
+        const pagegroup = Math.ceil(pageNum / maxpage);
 
-        console.log('lowpage = ' + lowpage)
-        console.log(pagegroup)
-        console.log(pageSize)
-        console.log(pagevalue)
-        let last = pagegroup * pageSize;
-
-        console.log(last)
+        let last = pagegroup * usepageSize;
         if (last > lowpage) {
             last = lowpage;
         }
-        let first = last - (pageSize - 1); // 화면에 보여질 첫번째 페이지 번호
+        let first = last - (usepageSize - 1); // 화면에 보여질 첫번째 페이지 번호
         const next = last + 1;
         const prev = first - 1;
 
         if (lowpage < 1) {
             first = last;
         }
-
-
 
         if (first > 10) {
 
@@ -218,7 +191,6 @@ function ElasticBoard() {
             );
 
         }
-        console.log(buttons)
 
         return buttons;
     }
@@ -246,8 +218,11 @@ function ElasticBoard() {
     }
 
     const moveWriteForm = () => {
+        if (!sessionStorage.getItem("member_id")) {
+            window.alert("로그인 해주세요!")
+            window.location.href = "/addboard"
+        }
         window.location.href = "/addboard"
-        //console.log('11')
     }
 
     const selectMenuHandler = (index, tabsValue) => {
@@ -255,31 +230,35 @@ function ElasticBoard() {
         // 해당 함수가 실행되면 현재 선택된 Tab Menu 가 갱신.
         setSelectTabs(tabsValue);
         setTabsCss(index);
+        const newPath = `/board?b_type=${tabsValue}&viewCnt=${usepageSize}&search=${searchValue}&pageNum=${currentPage}`;
+        window.location.href = newPath;
     };
 
     const handlePagecountChange = (event) => {
 
         setUsepageSize(event.target.value);
-        console.log(selectTabs)
-        console.log(pageCount)
-        const newPath = `/board?b_type=${selectTabs}&viewCnt=${event.target.value}&search=${currentPage}`;
-        history(newPath)
+        const newPath = `/board?b_type=${selectTabs}&viewCnt=${event.target.value}&search=${searchValue}&pageNum=${currentPage}`;
+        window.location.href = newPath;
     };
 
     function handlePageChange(newPage) {
-        console.log(newPage)
         setCurrentPage(newPage);
-        const newPath = `/board?b_type=${selectTabs}&viewCnt=${usepageSize}&search=${currentPage}`;
-        history(newPath)
+        const newPath = `/board?b_type=${selectTabs}&viewCnt=${usepageSize}&search=${searchValue}&pageNum=${newPage}`;
+        window.location.href = newPath;
         //elastick(newPage);
+    }
+
+    const searchHref = () => {
+        const newPath = `/board?b_type=${selectTabs}&viewCnt=${usepageSize}&search=${searchValue}&pageNum=${currentPage}`;
+        window.location.href = newPath
     }
 
     return (
         <>
             <section className="notice">
                 {/* board list area */}
-                <div className='wrap'>
-                    <div id="board-list" style={{ clear: "both" }}>
+                <div className='board_main_wrap' style={{ left: 150 }}>
+                    <div className="board-list" >
                         <div className="page-title" style={{ textAlign: 'center' }}>
                             <h1>게시판</h1>
                         </div>
@@ -292,7 +271,7 @@ function ElasticBoard() {
                                 <div>
                                     <ul className="tabs">
                                         {tabEvent.map((el, index) => (
-                                            <Link key={el.id} to={`/board?b_type=${el.link}&viewCnt=${pageCount}&search=${currentPage}`}>
+                                            <Link key={el.id} to={`/board?b_type=${el.link}&viewCnt=${pageCount}&search=${searchValue}`}>
                                                 <li className={index === tabsCss ? "tab-link current" : "tab-link"}
                                                     id={el.id}
                                                     onClick={() => selectMenuHandler(index, el.link)}
@@ -391,10 +370,10 @@ function ElasticBoard() {
                     <div style={{ clear: 'both' }}></div>
 
                     { /* board search area */}
-                    <div id="board-search">
-                        <div className='container'>
-                            <div className='search-window'>
-                                <div className='search-wrap'>
+                    <div className="board-main-search">
+                        <div className='container' >
+                            <div className='search-window' >
+                                <div className='search-wrap' style={{ left: 100 }} >
                                     <select
                                         name="selectField"
                                         className="selectField"
@@ -421,7 +400,7 @@ function ElasticBoard() {
                                         type="button"
                                         id="searchButton"
                                         className="btn btn-search"
-                                        onClick={() => elastick(currentPage)}>
+                                        onClick={() => searchHref()}>
                                         검색
                                     </button>
 

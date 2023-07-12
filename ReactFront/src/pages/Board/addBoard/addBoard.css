@@ -1,10 +1,13 @@
-body{
+body {
 	background-color: #fdfafa;
 }
-#create-board{
-	margin: 100px 0 ;
+
+.board-create-board {
+	margin: 100px 0;
+
 }
-#create-board .create-window {
+
+.board-create-board .create-window {
 	position: relative;
 	/*   padding-right: 124px; */
 	margin: 0 auto;
@@ -26,7 +29,8 @@ body{
 	width: 40px;
 }
 
-#b_type, #option {
+#b_type,
+#option {
 	width: 20%;
 	height: 20px;
 	margin-bottom: 10px;
@@ -35,25 +39,25 @@ body{
 
 #insert-btn-wrap {
 	float: right;
-	
+
 }
 
-.imgs_file{
-	margin:100px 0 0 0;
+.imgs_file {
+	margin: 100px 0 0 0;
 }
 
 
 #insert-btn-wrap .btn-blue {
 	background: #4aa8d8;
 	color: #fff;
-	height:35px;
-	
+	height: 35px;
+
 }
-	
+
 #insert-btn-wrap .btn-blue:hover .btn-blue:focus {
 	background: #298cbf;
 	border-color: #298cbf;
-	color : #ffffff;
+	color: #ffffff;
 	border: 2px solid black;
 }
 
@@ -101,8 +105,10 @@ input[type=file] {
 	border: 2px solid black;
 }
 
-.my_button:hover, .my_button:focus, .my_button a {
-	background-color:#298cbf;
+.my_button:hover,
+.my_button:focus,
+.my_button a {
+	background-color: #298cbf;
 	color: #fff;
 }
 
@@ -121,8 +127,10 @@ input[type=file] {
 	margin-right: 10px;
 }
 
- .ck-editor__editable { height: 400px; }
+.ck-editor__editable {
+	height: 400px;
+}
 
- .form-select{
-    width: 100%;
- }
+.form-select {
+	width: 100%;
+}

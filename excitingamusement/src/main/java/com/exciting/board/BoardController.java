@@ -52,12 +52,14 @@ public class BoardController {
 	BoardService service;
 
     private static final String BOARD_UPLOAD_PATH;
+    
+
+
 
     static {
         
 		try {
 			String dirPath = "C:\\static\\uploads";;
-		    System.out.println(dirPath);
 		    BOARD_UPLOAD_PATH = dirPath;
 		    FileUtils.createDirectory(BOARD_UPLOAD_PATH);
 		} catch (Exception e) {
@@ -168,7 +170,7 @@ System.out.println("asdasdasdasdasdasdasd"+board_id);
 	 * 
 	 */
 
-	@PostMapping("/createBoard")
+	@PostMapping("/addBoard")
 	public int createBoardPost(@RequestBody BoardDTO boardDTO) {
 
 		BoardEntity boardEntity = BoardDTO.toEntity(boardDTO);
@@ -195,6 +197,9 @@ System.out.println("asdasdasdasdasdasdasd"+board_id);
 	@GetMapping("/view")
 	@ResponseBody
 	public ResponseEntity<?> boardView(BoardDTO boardDTO) {
+		
+		
+
 
 		try {
 			List<Map<String, Object>> boardView = new ArrayList<>();
@@ -212,7 +217,6 @@ System.out.println("asdasdasdasdasdasdasd"+board_id);
 
 			// 게시판 이미지 불러오기
 			List<BoardImgEntity> boardImgEntity = service.boardImgSelect(boardDTO.getBoard_id());
-
 			// 게시판 이미지 dto로 변환
 			List<BoardImgDTO> boardImgDTO = boardImgEntity.stream().map(BoardImgDTO::new).collect(Collectors.toList());
 
@@ -235,11 +239,13 @@ System.out.println("asdasdasdasdasdasdasd"+board_id);
 			List<JSONObject> imgjson = boardImgDTO.stream().map(img -> ChangeJson.ToChangeJson(img))
 					.collect(Collectors.toList());
 
+			System.out.println(boardViewData+"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+			
 			jsonObj.put("boardimg", imgjson);
 
 			jsonObj.put("cnt", boardReplyCnt);
 			boardView.add(jsonObj);
-
+			System.out.println(boardView+"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 
 			ResponseDTO<BoardDTO> response = ResponseDTO.<BoardDTO>builder().data(boardView).build();
 
@@ -290,8 +296,8 @@ System.out.println("asdasdasdasdasdasdasd"+board_id);
 	@PostMapping("/favoriteBoard")
 	@ResponseBody
 	public int favoriteBoardPost(@RequestBody BoardFavoriteDTO boardFavoriteDTO) {
-		// member_id ,board_id 필요
-		// 추천을 이미 햇는지 검사하는 코드
+		
+		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"+boardFavoriteDTO);
 		try {
 			BoardFavoriteEntity entity = BoardFavoriteDTO.toEntity(boardFavoriteDTO);
 			// db 작업
@@ -509,7 +515,7 @@ System.out.println("asdasdasdasdasdasdasd"+board_id);
 
 	@DeleteMapping("/deleteBoard")
 	public void deleteBoard(BoardDTO boardDTO) {
-
+		System.out.println(boardDTO);
 		BoardEntity entity = BoardDTO.toEntity(boardDTO);
 
 		List<BoardImgEntity> deleteImgs = service.deleteBoard(entity);
